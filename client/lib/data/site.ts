@@ -84,9 +84,25 @@ export const socialLinks = [
 
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
+  {
+    label: "About Us",
+    href: "/about",
+    children: [
+      { label: "About Us", href: "/about" },
+      { label: "Our Team", href: "/team" },
+    ],
+  },
   { label: "Programs", href: "/programs" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
+] as const;
+
+/** Flat link list for the footer, which has no room for nested dropdowns. */
+export const footerLinks = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
   { label: "Our Team", href: "/team" },
+  { label: "Programs", href: "/programs" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ] as const;

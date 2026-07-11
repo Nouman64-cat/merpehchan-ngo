@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa6";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/layout/Logo";
-import { navLinks, headOffice, socialLinks, site } from "@/lib/data/site";
+import { footerLinks, headOffice, socialLinks, site } from "@/lib/data/site";
 import { programs } from "@/lib/data/programs";
 
 const socialIcons = {
@@ -57,7 +57,7 @@ export function Footer() {
             Quick Links
           </h3>
           <ul className="mt-4 space-y-2.5">
-            {navLinks.map((link) => (
+            {footerLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}

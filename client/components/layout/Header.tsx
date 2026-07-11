@@ -6,11 +6,16 @@ import Link from "next/link";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/layout/Logo";
+import { NavDropdown } from "@/components/layout/NavDropdown";
 import { navLinks } from "@/lib/data/site";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
+  function isLinkActive(href: string) {
+    return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-paper/95 backdrop-blur">
@@ -18,23 +23,30 @@ export function Header() {
         <Logo />
 
         <nav className="hidden items-center gap-8 lg:flex">
-          {navLinks.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
-            return (
+          {navLinks.map((link) =>
+            "children" in link ? (
+              <NavDropdown
+                key={link.href}
+                label={link.label}
+                href={link.href}
+                items={link.children}
+                isActive={
+                  isLinkActive(link.href) ||
+                  link.children.some((child) => isLinkActive(child.href))
+                }
+              />
+            ) : (
               <Link
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-medium transition-colors hover:text-primary-500 ${
-                  isActive ? "text-primary-500" : "text-ink-soft"
+                  isLinkActive(link.href) ? "text-primary-500" : "text-ink-soft"
                 }`}
               >
                 {link.label}
               </Link>
-            );
-          })}
+            )
+          )}
         </nav>
 
         <div className="hidden lg:block">
@@ -61,14 +73,27 @@ export function Header() {
         <div className="border-t border-black/5 bg-paper lg:hidden">
           <Container className="flex flex-col gap-1 py-4">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="rounded-md px-2 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-muted hover:text-primary-500"
-              >
-                {link.label}
-              </Link>
+              <div key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-md px-2 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-muted hover:text-primary-500"
+                >
+                  {link.label}
+                </Link>
+                {"children" in link
+                  ? link.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setIsOpen(false)}
+                        className="block rounded-md px-6 py-2 text-sm font-medium text-ink-soft/80 hover:bg-paper-muted hover:text-primary-500"
+                      >
+                        {child.label}
+                      </Link>
+                    ))
+                  : null}
+              </div>
             ))}
             <Link
               href="/donate"
