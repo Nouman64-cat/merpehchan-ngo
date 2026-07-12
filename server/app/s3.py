@@ -1,8 +1,11 @@
+import io
 import uuid
 from functools import lru_cache
 
 import boto3
 from fastapi import HTTPException, UploadFile, status
+from PIL import Image, ImageOps
+from starlette.concurrency import run_in_threadpool
 
 from app.config import get_settings
 
@@ -11,6 +14,27 @@ MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5MB
 TEAM_PHOTO_PREFIX = "team-photos"
 EVENT_PHOTO_PREFIX = "event-photos"
 PROJECT_PHOTO_PREFIX = "project-photos"
+
+# Uploaded photos are re-encoded to WebP and capped to this size before
+# storage, so the S3 origin file itself is small — the biggest lever for
+# image load speed, independent of any CDN in front of the bucket.
+MAX_IMAGE_DIMENSION = 1920
+WEBP_QUALITY = 82
+
+
+def _process_image(contents: bytes) -> bytes:
+    """Downscales and re-encodes an image to WebP. Runs synchronously — call via threadpool."""
+    image = Image.open(io.BytesIO(contents))
+    image = ImageOps.exif_transpose(image)  # phone photos often carry rotation in EXIF, not pixels
+
+    if image.mode not in ("RGB", "RGBA"):
+        image = image.convert("RGBA" if "A" in image.getbands() else "RGB")
+
+    image.thumbnail((MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION), Image.LANCZOS)
+
+    buffer = io.BytesIO()
+    image.save(buffer, format="WEBP", quality=WEBP_QUALITY, method=6)
+    return buffer.getvalue()
 
 
 @lru_cache
@@ -44,8 +68,15 @@ async def _upload_photo(file: UploadFile, prefix: str) -> tuple[str, str]:
             detail="Photo must be smaller than 5MB.",
         )
 
-    extension = file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else "jpg"
-    key = f"{prefix}/{uuid.uuid4()}.{extension}"
+    try:
+        contents = await run_in_threadpool(_process_image, contents)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Could not process this image. Please try a different file.",
+        ) from exc
+
+    key = f"{prefix}/{uuid.uuid4()}.webp"
 
     settings = get_settings()
     client = get_s3_client()
@@ -53,7 +84,7 @@ async def _upload_photo(file: UploadFile, prefix: str) -> tuple[str, str]:
         Bucket=settings.aws_s3_bucket_name,
         Key=key,
         Body=contents,
-        ContentType=file.content_type,
+        ContentType="image/webp",
     )
 
     return _build_object_url(key), key
