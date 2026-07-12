@@ -109,6 +109,13 @@ export function TeamMemberForm({
           </p>
         </div>
         <div className="flex items-center gap-2 pt-7">
+          {/* Unchecked checkboxes omit themselves from the submitted form,
+              so this fallback guarantees "is_active" is always present.
+              It must come BEFORE the checkbox in DOM order: the backend
+              (Starlette's multipart form parser) resolves duplicate field
+              names to the LAST value, unlike the browser's FormData.get(),
+              which resolves to the first. */}
+          <input type="hidden" name="is_active" value="false" />
           <input
             id="is_active"
             name="is_active"
@@ -117,11 +124,6 @@ export function TeamMemberForm({
             defaultChecked={initial?.is_active ?? true}
             className="h-4 w-4 rounded border-black/20 text-primary-500 focus:ring-primary-500"
           />
-          {/* Unchecked checkboxes omit themselves from FormData, so this
-              fallback guarantees "is_active" is always present. Its DOM
-              order after the checkbox matters: FormData.get() returns the
-              first same-named value, which is "true" only when checked. */}
-          <input type="hidden" name="is_active" value="false" />
           <label htmlFor="is_active" className="text-sm font-medium text-ink">
             Visible on website
           </label>

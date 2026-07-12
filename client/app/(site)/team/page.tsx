@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CtaBanner } from "@/components/ui/CtaBanner";
 import { TeamCard } from "@/components/team/TeamCard";
-import { leadership } from "@/lib/data/team";
+import { getPublicTeam } from "@/lib/team";
 import { unsplash } from "@/lib/images";
 
 export const metadata: Metadata = {
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
     "Meet the leadership behind Meri Pehchan Welfare Foundation and the staff and volunteers who deliver our programs on the ground.",
 };
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const team = await getPublicTeam();
+
   return (
     <>
       <PageHero
@@ -31,11 +33,25 @@ export default function TeamPage() {
             title="Executive team"
             align="center"
           />
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {leadership.map((member) => (
-              <TeamCard key={member.name} member={member} />
-            ))}
-          </div>
+          {team.length > 0 ? (
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {team.map((member) => (
+                <TeamCard
+                  key={member._id}
+                  member={{
+                    name: member.name,
+                    role: member.role,
+                    bio: member.bio,
+                    photoUrl: member.photo_url,
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-12 text-center text-sm text-ink-soft">
+              Team information is being updated. Please check back soon.
+            </p>
+          )}
         </Container>
       </section>
 
