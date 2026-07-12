@@ -87,13 +87,10 @@ export const navLinks = [
   {
     label: "About Us",
     href: "/about",
-    children: [
-      { label: "About Us", href: "/about" },
-      { label: "Our Team", href: "/team" },
-    ],
+    children: [{ label: "Our Team", href: "/team" }],
   },
   { label: "Projects", href: "/projects" },
-  { label: "Gallery", href: "/gallery" },
+  { label: "Events", href: "/events" },
   { label: "Contact", href: "/contact" },
 ] as const;
 
@@ -103,6 +100,6 @@ export const footerLinks = [
   { label: "About Us", href: "/about" },
   { label: "Our Team", href: "/team" },
   { label: "Projects", href: "/projects" },
-  { label: "Gallery", href: "/gallery" },
+  { label: "Events", href: "/events" },
   { label: "Contact", href: "/contact" },
 ] as const;

@@ -7,7 +7,7 @@ import { getPublicEvents } from "@/lib/events";
 import { unsplash } from "@/lib/images";
 
 export const metadata: Metadata = {
-  title: "Gallery",
+  title: "Events",
   description:
     "A look at Meri Pehchan Welfare Foundation's health camps, education programs, women empowerment classes, and community relief work.",
 };
@@ -21,13 +21,13 @@ function formatEventDate(isoDate: string): string {
   });
 }
 
-export default async function GalleryPage() {
+export default async function EventsPage() {
   const events = await getPublicEvents();
 
   return (
     <>
       <PageHero
-        eyebrow="Gallery"
+        eyebrow="Events"
         title="Our work, in pictures"
         description="A glimpse into the health camps, classrooms, and relief drives happening across our communities."
         image={unsplash("1600880292203-757bb62b4baf", 1600, 900)}
@@ -71,7 +71,7 @@ export default async function GalleryPage() {
 
       <CtaBanner
         title="Be part of the next chapter"
-        description="Your support helps us reach more families and add more stories to this gallery."
+        description="Your support helps us reach more families and add more stories to this page."
         primary={{ label: "Donate Now", href: "/donate" }}
       />
     </>

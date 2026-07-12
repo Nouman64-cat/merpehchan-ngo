@@ -58,7 +58,7 @@ export default function AdminEventsListPage() {
         <div>
           <h1 className="font-display text-2xl font-bold text-ink">Events</h1>
           <p className="mt-1 text-sm text-ink-soft">
-            Manage the events shown on the public Gallery page.
+            Manage the events shown on the public Events page.
           </p>
         </div>
         <Link

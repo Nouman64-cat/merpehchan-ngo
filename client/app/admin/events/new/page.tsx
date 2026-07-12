@@ -16,7 +16,7 @@ export default function NewEventPage() {
     <div className="mx-auto max-w-2xl">
       <h1 className="font-display text-2xl font-bold text-ink">Add Event</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        This event will appear on the public Gallery page once saved.
+        This event will appear on the public Events page once saved.
       </p>
       <div className="mt-8 rounded-2xl border border-black/5 bg-white p-8">
         <EventForm onSubmit={handleSubmit} submitLabel="Add Event" />
