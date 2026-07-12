@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { VideoSection } from "@/components/home/VideoSection";
 import { ImpactStats } from "@/components/home/ImpactStats";
 import { AboutPreview } from "@/components/home/AboutPreview";
 import { ProgramsPreview } from "@/components/home/ProgramsPreview";
@@ -10,6 +11,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <VideoSection />
       <ImpactStats />
       <AboutPreview />
       <ProgramsPreview />
