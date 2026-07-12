@@ -112,7 +112,7 @@ export default function AboutPage() {
               title="Rooted in Lahore, supporting families beyond it"
             />
             <p className="mt-5 text-base leading-relaxed text-ink-soft">
-              Our head office in Wapda Town, Lahore, coordinates programs
+              Our head office in Wapda Town, Lahore, coordinates projects
               delivered on the ground across Pakistan, with a supporting
               office network extending to Islamabad, Sydney, Lahr, London,
               and Texas.
@@ -149,9 +149,9 @@ export default function AboutPage() {
 
       <CtaBanner
         title="Want to see our work up close?"
-        description="Get in touch with our team to learn more about our programs or how you can get involved."
+        description="Get in touch with our team to learn more about our projects or how you can get involved."
         primary={{ label: "Contact Us", href: "/contact" }}
-        secondary={{ label: "View Programs", href: "/programs" }}
+        secondary={{ label: "View Projects", href: "/projects" }}
       />
     </>
   );

@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/data/site";
-import { programs } from "@/lib/data/programs";
+import { getPublicProjects } from "@/lib/projects";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/about",
-    "/programs",
+    "/projects",
     "/team",
     "/gallery",
     "/contact",
@@ -16,10 +16,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
-  const programRoutes = programs.map((program) => ({
-    url: `${site.url}/programs/${program.slug}`,
+  const projects = await getPublicProjects();
+  const projectRoutes = projects.map((project) => ({
+    url: `${site.url}/projects/${project._id}`,
     lastModified: new Date(),
   }));
 
-  return [...staticRoutes, ...programRoutes];
+  return [...staticRoutes, ...projectRoutes];
 }

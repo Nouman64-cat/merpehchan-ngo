@@ -2,7 +2,7 @@ import { Hero } from "@/components/home/Hero";
 import { VideoSection } from "@/components/home/VideoSection";
 import { ImpactStats } from "@/components/home/ImpactStats";
 import { AboutPreview } from "@/components/home/AboutPreview";
-import { ProgramsPreview } from "@/components/home/ProgramsPreview";
+import { ProjectsPreview } from "@/components/home/ProjectsPreview";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { GlobalPresence } from "@/components/home/GlobalPresence";
 import { CtaBanner } from "@/components/ui/CtaBanner";
@@ -14,11 +14,11 @@ export default function Home() {
       <VideoSection />
       <ImpactStats />
       <AboutPreview />
-      <ProgramsPreview />
+      <ProjectsPreview />
       <TestimonialsSection />
       <GlobalPresence />
       <CtaBanner
-        title="Your support keeps these programs running"
+        title="Your support keeps these projects running"
         description="Every donation goes directly toward free healthcare, education, and relief for families who need it most."
         primary={{ label: "Donate Now", href: "/donate" }}
         secondary={{ label: "Get in Touch", href: "/contact" }}

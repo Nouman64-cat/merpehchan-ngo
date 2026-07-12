@@ -42,6 +42,26 @@ export type ContactMessage = {
   created_at: string;
 };
 
+export type ProjectImage = {
+  url: string;
+  key: string;
+};
+
+export type ProjectRecord = {
+  _id: string;
+  title: string;
+  description: string;
+  date: string;
+  areas: string[];
+  team_member_ids: string[];
+  youtube_url: string | null;
+  images: ProjectImage[];
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export class ApiError extends Error {
   status: number;
 
@@ -198,4 +218,37 @@ export async function updateMessageReadStatus(
 
 export async function deleteMessage(id: string): Promise<void> {
   await apiFetch(`/api/admin/contact/${id}`, { method: "DELETE" });
+}
+
+export async function fetchAdminProjects(): Promise<ProjectRecord[]> {
+  const response = await apiFetch("/api/admin/projects");
+  return response.json();
+}
+
+export async function fetchProject(id: string): Promise<ProjectRecord> {
+  const response = await apiFetch(`/api/admin/projects/${id}`);
+  return response.json();
+}
+
+export async function createProject(formData: FormData): Promise<ProjectRecord> {
+  const response = await apiFetch("/api/admin/projects", {
+    method: "POST",
+    body: formData,
+  });
+  return response.json();
+}
+
+export async function updateProject(
+  id: string,
+  formData: FormData
+): Promise<ProjectRecord> {
+  const response = await apiFetch(`/api/admin/projects/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+  return response.json();
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  await apiFetch(`/api/admin/projects/${id}`, { method: "DELETE" });
 }

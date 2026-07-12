@@ -12,7 +12,7 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/layout/Logo";
 import { footerLinks, headOffice, socialLinks, site } from "@/lib/data/site";
-import { programs } from "@/lib/data/programs";
+import { getPublicProjects } from "@/lib/projects";
 
 const socialIcons = {
   facebook: FaFacebookF,
@@ -22,8 +22,9 @@ const socialIcons = {
   pinterest: FaPinterestP,
 } as const;
 
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const projects = (await getPublicProjects()).slice(0, 5);
 
   return (
     <footer className="border-t border-black/5 bg-primary-900 text-white">
@@ -80,16 +81,16 @@ export function Footer() {
 
         <div>
           <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-accent-400">
-            Our Programs
+            Our Projects
           </h3>
           <ul className="mt-4 space-y-2.5">
-            {programs.map((program) => (
-              <li key={program.slug}>
+            {projects.map((project) => (
+              <li key={project._id}>
                 <Link
-                  href={`/programs/${program.slug}`}
+                  href={`/projects/${project._id}`}
                   className="text-sm text-white/70 transition-colors hover:text-white"
                 >
-                  {program.title}
+                  {project.title}
                 </Link>
               </li>
             ))}

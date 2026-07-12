@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   HiBars3,
   HiOutlineArrowRightOnRectangle,
+  HiOutlineBriefcase,
   HiOutlineCalendarDays,
   HiOutlineEnvelope,
   HiOutlineUserGroup,
@@ -19,6 +20,7 @@ const LOGIN_PATH = "/admin/login";
 const NAV_ITEMS = [
   { href: "/admin/team", label: "Team", icon: HiOutlineUserGroup },
   { href: "/admin/events", label: "Events", icon: HiOutlineCalendarDays },
+  { href: "/admin/projects", label: "Projects", icon: HiOutlineBriefcase },
   { href: "/admin/messages", label: "Messages", icon: HiOutlineEnvelope },
 ];
 

@@ -10,6 +10,7 @@ ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5MB
 TEAM_PHOTO_PREFIX = "team-photos"
 EVENT_PHOTO_PREFIX = "event-photos"
+PROJECT_PHOTO_PREFIX = "project-photos"
 
 
 @lru_cache
@@ -77,4 +78,12 @@ async def upload_event_photo(file: UploadFile) -> tuple[str, str]:
 
 
 def delete_event_photo(object_key: str) -> None:
+    _delete_photo(object_key)
+
+
+async def upload_project_photo(file: UploadFile) -> tuple[str, str]:
+    return await _upload_photo(file, PROJECT_PHOTO_PREFIX)
+
+
+def delete_project_photo(object_key: str) -> None:
     _delete_photo(object_key)

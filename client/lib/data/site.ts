@@ -92,7 +92,7 @@ export const navLinks = [
       { label: "Our Team", href: "/team" },
     ],
   },
-  { label: "Programs", href: "/programs" },
+  { label: "Projects", href: "/projects" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ] as const;
@@ -102,7 +102,7 @@ export const footerLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Our Team", href: "/team" },
-  { label: "Programs", href: "/programs" },
+  { label: "Projects", href: "/projects" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ] as const;
