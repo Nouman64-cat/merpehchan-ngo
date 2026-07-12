@@ -3,10 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaXmark } from "react-icons/fa6";
-import type { GalleryImage } from "@/lib/data/gallery";
 
-export function GalleryLightbox({ images }: { images: GalleryImage[] }) {
-  const [active, setActive] = useState<GalleryImage | null>(null);
+export type LightboxImage = {
+  id: string;
+  src: string;
+  alt: string;
+};
+
+export function GalleryLightbox({ images }: { images: LightboxImage[] }) {
+  const [active, setActive] = useState<LightboxImage | null>(null);
 
   return (
     <>

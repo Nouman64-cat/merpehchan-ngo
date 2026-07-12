@@ -1,5 +1,7 @@
 import { API_BASE_URL } from "@/lib/admin/config";
-import { getStoredToken } from "@/lib/admin/auth";
+import { clearStoredToken, getStoredToken } from "@/lib/admin/auth";
+
+const LOGIN_PATH = "/admin/login";
 
 export type TeamMember = {
   _id: string;
@@ -7,6 +9,23 @@ export type TeamMember = {
   role: string;
   bio: string | null;
   photo_url: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type EventPhoto = {
+  url: string;
+  key: string;
+};
+
+export type EventRecord = {
+  _id: string;
+  title: string;
+  description: string | null;
+  date: string;
+  photos: EventPhoto[];
   display_order: number;
   is_active: boolean;
   created_at: string;
@@ -43,6 +62,14 @@ async function apiFetch(path: string, init: RequestInit = {}): Promise<Response>
     ...init,
     headers,
   });
+
+  if (response.status === 401) {
+    clearStoredToken();
+    if (typeof window !== "undefined" && window.location.pathname !== LOGIN_PATH) {
+      window.location.href = LOGIN_PATH;
+    }
+    throw new ApiError(await parseErrorMessage(response), response.status);
+  }
 
   if (!response.ok) {
     throw new ApiError(await parseErrorMessage(response), response.status);
@@ -97,4 +124,37 @@ export async function updateTeamMember(
 
 export async function deleteTeamMember(id: string): Promise<void> {
   await apiFetch(`/api/admin/team/${id}`, { method: "DELETE" });
+}
+
+export async function fetchAdminEvents(): Promise<EventRecord[]> {
+  const response = await apiFetch("/api/admin/events");
+  return response.json();
+}
+
+export async function fetchEvent(id: string): Promise<EventRecord> {
+  const response = await apiFetch(`/api/admin/events/${id}`);
+  return response.json();
+}
+
+export async function createEvent(formData: FormData): Promise<EventRecord> {
+  const response = await apiFetch("/api/admin/events", {
+    method: "POST",
+    body: formData,
+  });
+  return response.json();
+}
+
+export async function updateEvent(
+  id: string,
+  formData: FormData
+): Promise<EventRecord> {
+  const response = await apiFetch(`/api/admin/events/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+  return response.json();
+}
+
+export async function deleteEvent(id: string): Promise<void> {
+  await apiFetch(`/api/admin/events/${id}`, { method: "DELETE" });
 }

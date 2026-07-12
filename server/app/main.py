@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import close_mongo_connection, connect_to_mongo
-from app.routers import auth, team
+from app.routers import auth, events, team
 
 
 @asynccontextmanager
@@ -29,6 +29,8 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(team.public_router)
 app.include_router(team.admin_router)
+app.include_router(events.public_router)
+app.include_router(events.admin_router)
 
 
 @app.get("/api/health", tags=["health"])

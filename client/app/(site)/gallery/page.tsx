@@ -3,7 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { CtaBanner } from "@/components/ui/CtaBanner";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { galleryCategories, galleryImages } from "@/lib/data/gallery";
+import { getPublicEvents } from "@/lib/events";
 import { unsplash } from "@/lib/images";
 
 export const metadata: Metadata = {
@@ -12,7 +12,18 @@ export const metadata: Metadata = {
     "A look at Meri Pehchan Welfare Foundation's health camps, education programs, women empowerment classes, and community relief work.",
 };
 
-export default function GalleryPage() {
+function formatEventDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+export default async function GalleryPage() {
+  const events = await getPublicEvents();
+
   return (
     <>
       <PageHero
@@ -25,20 +36,36 @@ export default function GalleryPage() {
 
       <section className="py-20">
         <Container className="space-y-16">
-          {galleryCategories.map((category) => (
-            <div key={category}>
-              <h2 className="font-display text-2xl font-bold text-ink">
-                {category}
-              </h2>
-              <div className="mt-6">
-                <GalleryLightbox
-                  images={galleryImages.filter(
-                    (image) => image.category === category
-                  )}
-                />
+          {events.length === 0 ? (
+            <p className="text-center text-sm text-ink-soft">
+              No events to show yet — check back soon.
+            </p>
+          ) : (
+            events.map((event) => (
+              <div key={event._id}>
+                <h2 className="font-display text-2xl font-bold text-ink">
+                  {event.title}
+                </h2>
+                <p className="mt-1 text-sm font-medium text-primary-500">
+                  {formatEventDate(event.date)}
+                </p>
+                {event.description ? (
+                  <p className="mt-3 max-w-3xl text-ink-soft">{event.description}</p>
+                ) : null}
+                {event.photos.length > 0 ? (
+                  <div className="mt-6">
+                    <GalleryLightbox
+                      images={event.photos.map((photo) => ({
+                        id: photo.key,
+                        src: photo.url,
+                        alt: event.title,
+                      }))}
+                    />
+                  </div>
+                ) : null}
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </Container>
       </section>
 

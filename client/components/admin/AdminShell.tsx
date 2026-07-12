@@ -55,6 +55,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
             >
               Team
             </Link>
+            <Link
+              href="/admin/events"
+              className="text-sm font-medium text-ink-soft hover:text-primary-500"
+            >
+              Events
+            </Link>
             <button
               type="button"
               onClick={handleLogout}

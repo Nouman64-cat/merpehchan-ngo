@@ -9,6 +9,7 @@ from app.config import get_settings
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5MB
 TEAM_PHOTO_PREFIX = "team-photos"
+EVENT_PHOTO_PREFIX = "event-photos"
 
 
 @lru_cache
@@ -27,8 +28,8 @@ def _build_object_url(key: str) -> str:
     return f"https://{settings.aws_s3_bucket_name}.s3.{settings.aws_region}.amazonaws.com/{key}"
 
 
-async def upload_team_photo(file: UploadFile) -> tuple[str, str]:
-    """Uploads a team member photo to S3. Returns (url, object_key)."""
+async def _upload_photo(file: UploadFile, prefix: str) -> tuple[str, str]:
+    """Uploads a photo to S3 under the given key prefix. Returns (url, object_key)."""
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -43,7 +44,7 @@ async def upload_team_photo(file: UploadFile) -> tuple[str, str]:
         )
 
     extension = file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else "jpg"
-    key = f"{TEAM_PHOTO_PREFIX}/{uuid.uuid4()}.{extension}"
+    key = f"{prefix}/{uuid.uuid4()}.{extension}"
 
     settings = get_settings()
     client = get_s3_client()
@@ -57,7 +58,23 @@ async def upload_team_photo(file: UploadFile) -> tuple[str, str]:
     return _build_object_url(key), key
 
 
-def delete_team_photo(object_key: str) -> None:
+def _delete_photo(object_key: str) -> None:
     settings = get_settings()
     client = get_s3_client()
     client.delete_object(Bucket=settings.aws_s3_bucket_name, Key=object_key)
+
+
+async def upload_team_photo(file: UploadFile) -> tuple[str, str]:
+    return await _upload_photo(file, TEAM_PHOTO_PREFIX)
+
+
+def delete_team_photo(object_key: str) -> None:
+    _delete_photo(object_key)
+
+
+async def upload_event_photo(file: UploadFile) -> tuple[str, str]:
+    return await _upload_photo(file, EVENT_PHOTO_PREFIX)
+
+
+def delete_event_photo(object_key: str) -> None:
+    _delete_photo(object_key)
