@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { headOffice } from "@/lib/data/site";
+import { API_BASE_URL } from "@/lib/config";
 
 type ContactPayload = {
   name?: string;
@@ -38,6 +39,26 @@ export async function POST(request: Request) {
     );
   }
 
+  try {
+    const storeResponse = await fetch(`${API_BASE_URL}/api/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, subject, message }),
+    });
+    if (!storeResponse.ok) {
+      throw new Error(`Backend responded with ${storeResponse.status}`);
+    }
+  } catch (error) {
+    console.error("Failed to store contact submission:", error);
+    return NextResponse.json(
+      {
+        error:
+          "We couldn't send your message right now. Please try again later.",
+      },
+      { status: 502 }
+    );
+  }
+
   const resendApiKey = process.env.RESEND_API_KEY;
   const notifyEmail = process.env.CONTACT_TO_EMAIL ?? headOffice.emails[0];
 
@@ -71,15 +92,10 @@ export async function POST(request: Request) {
       );
     }
   } else {
-    // Email delivery isn't configured yet, so the submission is logged
-    // instead of silently dropped. Set RESEND_API_KEY and CONTACT_TO_EMAIL
-    // in .env.local to enable real delivery via https://resend.com.
-    console.info("Contact form submission (email delivery not configured):", {
-      name,
-      email,
-      subject,
-      message,
-    });
+    // Email delivery isn't configured — the message is already saved to the
+    // database above, so it'll still be visible in the admin panel. Set
+    // RESEND_API_KEY and CONTACT_TO_EMAIL in .env.local to also notify by email.
+    console.info("Contact form submission stored (email delivery not configured).");
   }
 
   return NextResponse.json({ success: true });

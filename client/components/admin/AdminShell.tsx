@@ -7,6 +7,7 @@ import {
   HiBars3,
   HiOutlineArrowRightOnRectangle,
   HiOutlineCalendarDays,
+  HiOutlineEnvelope,
   HiOutlineUserGroup,
   HiOutlineXMark,
 } from "react-icons/hi2";
@@ -18,6 +19,7 @@ const LOGIN_PATH = "/admin/login";
 const NAV_ITEMS = [
   { href: "/admin/team", label: "Team", icon: HiOutlineUserGroup },
   { href: "/admin/events", label: "Events", icon: HiOutlineCalendarDays },
+  { href: "/admin/messages", label: "Messages", icon: HiOutlineEnvelope },
 ];
 
 export function AdminShell({ children }: { children: ReactNode }) {

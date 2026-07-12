@@ -32,6 +32,16 @@ export type EventRecord = {
   updated_at: string;
 };
 
+export type ContactMessage = {
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+};
+
 export class ApiError extends Error {
   status: number;
 
@@ -157,4 +167,35 @@ export async function updateEvent(
 
 export async function deleteEvent(id: string): Promise<void> {
   await apiFetch(`/api/admin/events/${id}`, { method: "DELETE" });
+}
+
+export type MessageFilter = "all" | "unread" | "read";
+
+export async function fetchAdminMessages(
+  filter: MessageFilter = "all"
+): Promise<ContactMessage[]> {
+  const query = filter === "all" ? "" : `?is_read=${filter === "read"}`;
+  const response = await apiFetch(`/api/admin/contact${query}`);
+  return response.json();
+}
+
+export async function fetchMessage(id: string): Promise<ContactMessage> {
+  const response = await apiFetch(`/api/admin/contact/${id}`);
+  return response.json();
+}
+
+export async function updateMessageReadStatus(
+  id: string,
+  isRead: boolean
+): Promise<ContactMessage> {
+  const response = await apiFetch(`/api/admin/contact/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ is_read: isRead }),
+  });
+  return response.json();
+}
+
+export async function deleteMessage(id: string): Promise<void> {
+  await apiFetch(`/api/admin/contact/${id}`, { method: "DELETE" });
 }
